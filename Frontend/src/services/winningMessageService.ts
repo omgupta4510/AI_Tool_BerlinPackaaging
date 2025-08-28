@@ -34,7 +34,7 @@ class WinningMessageService {
 
   async fetchWinningMessage(companyName: string): Promise<WinningMessageData> {
     try {
-      const response = await fetch(`${this.baseUrl}/winning-message/winning-message`, {
+      const response = await fetch(`${this.baseUrl}/api/winning-message/winning-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

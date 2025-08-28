@@ -86,7 +86,7 @@ class CommercialStrategyService {
 
   async fetchSalesPlay(companyName: string): Promise<CommercialStrategyData> {
     try {
-      const response = await fetch(`${this.baseUrl}/commercial-strategy/sales-play`, {
+      const response = await fetch(`${this.baseUrl}/api/commercial-strategy/sales-play`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ class CommercialStrategyService {
 
   async fetchWinningMessage(companyName: string): Promise<WinningMessageData> {
     try {
-      const response = await fetch(`${this.baseUrl}/commercial-strategy/winning-message`, {
+      const response = await fetch(`${this.baseUrl}/api/commercial-strategy/winning-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

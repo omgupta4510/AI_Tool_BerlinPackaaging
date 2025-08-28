@@ -147,7 +147,7 @@ const isBackendAvailable = async (): Promise<boolean> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
     
-    const response = await fetch(`${API_BASE_URL}/health`, {
+    const response = await fetch(`${API_BASE_URL}/api/health`, {
       method: 'GET',
       signal: controller.signal,
     });
@@ -171,7 +171,7 @@ export const trendsRegulationsService = {
         return mockTrendsData;
       }
 
-      const response = await fetch(`${API_BASE_URL}/trends-regulations/trends`, {
+      const response = await fetch(`${API_BASE_URL}/api/trends-regulations/trends`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ export const trendsRegulationsService = {
         return mockRegulationsData;
       }
 
-      const response = await fetch(`${API_BASE_URL}/trends-regulations/regulations`, {
+      const response = await fetch(`${API_BASE_URL}/api/trends-regulations/regulations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -240,7 +240,7 @@ export const trendsRegulationsService = {
         return mockAnalysisData;
       }
 
-      const response = await fetch(`${API_BASE_URL}/trends-regulations/analysis`, {
+      const response = await fetch(`${API_BASE_URL}/api/trends-regulations/analysis`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
