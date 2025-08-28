@@ -21,7 +21,7 @@ router.post('/trends', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning',
         messages: [
           {
             role: 'user',
@@ -69,7 +69,7 @@ router.post('/regulations', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning',
         messages: [
           {
             role: 'user',
@@ -117,7 +117,7 @@ router.post('/analysis', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning',
         messages: [
           {
             role: 'user',

@@ -21,7 +21,7 @@ router.post('/analysis', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning-pro',
         messages: [
           {
             role: 'user',

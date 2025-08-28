@@ -20,7 +20,7 @@ router.post('/sales-play', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning',
         messages: [
           {
             role: 'user',
@@ -379,7 +379,7 @@ router.post('/winning-message', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning',
         messages: [
           {
             role: 'user',

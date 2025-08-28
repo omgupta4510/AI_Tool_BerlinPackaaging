@@ -21,10 +21,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Enable CORS for your frontend
-// app.use(cors({
-//   origin: 'http://localhost:5173',
-//   credentials: true // Your Vite frontend URL
-// }));
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true // Your Vite frontend URL
+}));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -96,7 +96,7 @@ app.post('/api/company-data', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning-pro',
         messages: [
           {
             role: 'user',
@@ -250,7 +250,7 @@ app.post('/api/sustainability-data', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-reasoning',
         messages: [
           {
             role: 'user',
