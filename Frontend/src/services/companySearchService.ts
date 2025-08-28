@@ -70,11 +70,18 @@ export class CompanySearchService {
    */
   public static async searchCompanies(query: string): Promise<CompanySearchResult[]> {
     try {
+      console.log(`[CompanySearchService] Searching for: "${query}"`);
+      console.log(`[CompanySearchService] Base URL: ${this.baseUrl}`);
+      
       if (!query || query.trim().length < 2) {
+        console.log('[CompanySearchService] Query too short, returning empty results');
         return [];
       }
 
-      const response = await fetch(`${this.baseUrl}/api/companies/search`, {
+      const url = `${this.baseUrl}/api/companies/search`;
+      console.log(`[CompanySearchService] Making request to: ${url}`);
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,14 +89,18 @@ export class CompanySearchService {
         body: JSON.stringify({ query: query.trim() }),
       });
 
+      console.log(`[CompanySearchService] Response status: ${response.status}`);
+
       if (!response.ok) {
+        console.error(`[CompanySearchService] Search failed: ${response.status}`);
         throw new Error(`Search failed: ${response.status}`);
       }
 
       const result = await response.json();
+      console.log(`[CompanySearchService] Search results:`, result);
       return result.results || [];
     } catch (error) {
-      console.error('Company search error:', error);
+      console.error('[CompanySearchService] Company search error:', error);
       return this.getFallbackResults(query);
     }
   }

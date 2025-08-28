@@ -438,6 +438,7 @@ const Index = () => {
         }
       }
       
+      console.log('Setting products data:', data);
       setProductsData(data);
       setHasLoadedProducts(true);
       

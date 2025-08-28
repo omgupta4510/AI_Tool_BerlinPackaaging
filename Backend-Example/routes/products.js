@@ -228,7 +228,7 @@ Instructions:
 1. Research actual products from ${companyName} and their current packaging
 2. Provide real product names and accurate packaging descriptions
 3. Focus on identifying specific packaging opportunities
-4. Include at least 10 products if the company has that many
+4. Include at least 5 products if the company has that many
 5. Be specific about packaging materials and types
 6. Consider sustainability trends and cost optimization opportunities
 7. Provide actionable insights for packaging sales teams

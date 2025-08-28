@@ -21,9 +21,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Enable CORS for your frontend
-app.use(cors({
-  origin: 'http://localhost:5173' // Your Vite frontend URL
-}));
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+//   credentials: true // Your Vite frontend URL
+// }));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));

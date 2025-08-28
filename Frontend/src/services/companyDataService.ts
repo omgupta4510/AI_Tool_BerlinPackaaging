@@ -4,7 +4,6 @@ import { CompanySearchService } from './companySearchService';
 
 // Backend API configuration
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-const PERPLEXITY_API_KEY = import.meta.env.VITE_PERPLEXITY_API_KEY;
 
 // Cache for storing fetched company data
 const companyCache = new Map<string, { data: CompanyData; timestamp: number }>();
@@ -354,12 +353,10 @@ Provide accurate, up-to-date information. Focus on business-relevant details tha
 }
 
 // Helper functions to check configuration
-export const isPerplexityConfigured = (): boolean => {
-  return !!PERPLEXITY_API_KEY;
-};
+
 
 export const isBackendConfigured = (): boolean => {
-  return !!BACKEND_URL && !!PERPLEXITY_API_KEY;
+  return !!BACKEND_URL;
 };
 
 export const getBackendStatus = async (): Promise<boolean> => {

@@ -1,4 +1,5 @@
 # Backend Dockerfile
+
 FROM node:18-alpine
 
 # Set working directory
@@ -20,13 +21,14 @@ RUN adduser -S nodejs -u 1001
 # Change ownership of the app directory
 RUN chown -R nodejs:nodejs /app
 USER nodejs
+ENV HOST=0.0.0.0
 
 # Expose port
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node healthcheck.js
+#HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+ # CMD node healthcheck.js
 
 # Start the application
 CMD ["npm", "start"]

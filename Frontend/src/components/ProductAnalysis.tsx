@@ -21,6 +21,8 @@ const ProductAnalysis: React.FC<ProductAnalysisProps> = ({
 }) => {
   // Debug logging
   console.log('[ProductAnalysis] Component props:', { companyName, data, loading, error });
+  console.log('[ProductAnalysis] Data structure:', data);
+  console.log('[ProductAnalysis] Has data:', !!data);
 
   // State for product detail modal
   const [selectedProduct, setSelectedProduct] = useState<any>(null);

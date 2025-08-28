@@ -7,18 +7,12 @@ services:
       dockerfile: Dockerfile
     container_name: ai-tool-backend
     ports:
-      - "3001:3001"
-    
-    
+      - "3001:3000"
+    env_file:
+      - ./Backend-Example/.env
     restart: unless-stopped
     networks:
       - ai-tool-network
-    healthcheck:
-      test: ["CMD", "node", "healthcheck.js"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   frontend:
     build:
@@ -26,12 +20,10 @@ services:
       dockerfile: Dockerfile
     container_name: ai-tool-frontend
     ports:
-      - "5173:5173"
+      - "5174:5173"
     networks:
       - ai-tool-network
 
 networks:
   ai-tool-network:
     driver: bridge
-
-

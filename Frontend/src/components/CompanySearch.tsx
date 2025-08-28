@@ -22,20 +22,24 @@ export const CompanySearch = ({ onSearch, isLoading }: CompanySearchProps) => {
 
   // Debounced search
   useEffect(() => {
+    console.log(`[CompanySearch] Search query changed: "${searchQuery}"`);
     const timeoutId = setTimeout(async () => {
       if (searchQuery.trim().length >= 2) {
+        console.log(`[CompanySearch] Starting search for: "${searchQuery}"`);
         setIsSearching(true);
         try {
           const results = await CompanySearchService.searchCompanies(searchQuery);
+          console.log(`[CompanySearch] Search results:`, results);
           setSearchResults(results);
           setShowSuggestions(true);
         } catch (error) {
-          console.error('Search error:', error);
+          console.error('[CompanySearch] Search error:', error);
           setSearchResults([]);
         } finally {
           setIsSearching(false);
         }
       } else {
+        console.log(`[CompanySearch] Query too short, clearing results`);
         setSearchResults([]);
         setShowSuggestions(false);
       }

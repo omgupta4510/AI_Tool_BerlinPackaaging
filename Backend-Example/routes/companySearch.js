@@ -99,7 +99,7 @@ router.get('/:companyId/analysis/:type', async (req, res) => {
   try {
     const { companyId, type } = req.params;
     
-    const validTypes = ['products', 'competitive', 'trends', 'commercial'];
+    const validTypes = ['basic', 'products', 'competitive', 'trends', 'commercial'];
     if (!validTypes.includes(type)) {
       return res.status(400).json({ error: 'Invalid analysis type' });
     }
@@ -138,7 +138,7 @@ router.post('/:companyId/analysis/:type', async (req, res) => {
     const { companyId, type } = req.params;
     const { data, generationTime } = req.body;
     
-    const validTypes = ['products', 'competitive', 'trends', 'commercial'];
+    const validTypes = ['basic', 'products', 'competitive', 'trends', 'commercial'];
     if (!validTypes.includes(type)) {
       return res.status(400).json({ error: 'Invalid analysis type' });
     }

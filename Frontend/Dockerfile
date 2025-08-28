@@ -15,7 +15,7 @@ COPY . .
 
 # Build the application
 # RUN npm run build
-
+ENV HOST=0.0.0.0
 
 # Expose port
 EXPOSE 5173
