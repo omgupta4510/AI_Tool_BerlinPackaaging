@@ -138,235 +138,8 @@ const Index = () => {
     }
   };
 
-  const handleTabChange = async (tabId: string) => {
+  const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
-    
-    if (!selectedCompany) return;
-    
-    // Get the company ID for cache lookup
-    let currentCompanyId = null;
-    try {
-      const companySearchResult = await CompanySearchService.findOrCreateCompany(selectedCompany.basicInfo.name);
-      currentCompanyId = companySearchResult?.company?.id;
-    } catch (error) {
-      console.warn('Failed to get company ID for cache lookup:', error);
-    }
-    
-    // Load sustainability data when sustainability tab is selected and not already loaded
-    if (tabId === 'sustainability' && !hasLoadedSustainability) {
-      setLoadingSustainability(true);
-      try {
-        let data = null;
-        
-        // Check MongoDB cache first if we have company ID
-        if (currentCompanyId) {
-          try {
-            const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'competitive');
-            if (cachedData?.data) {
-              console.log('Using cached sustainability data from MongoDB');
-              data = cachedData.data;
-            }
-          } catch (cacheError) {
-            console.log('No cached sustainability data found, fetching fresh data');
-          }
-        }
-        
-        // If no cached data, fetch fresh data
-        if (!data) {
-          console.log('Fetching fresh sustainability data from AI');
-          data = await CompanyDataService.fetchSustainabilityData(selectedCompany.basicInfo.name);
-          
-          // Save fresh data to MongoDB if we have company ID
-          if (data && currentCompanyId) {
-            try {
-              await CompanySearchService.saveAnalysisData(currentCompanyId, 'competitive', data);
-              console.log('Saved fresh sustainability data to MongoDB');
-            } catch (saveError) {
-              console.warn('Failed to save sustainability data to MongoDB:', saveError);
-            }
-          }
-        }
-        
-        setSustainabilityData(data);
-        setHasLoadedSustainability(true);
-      } catch (error) {
-        console.error('Error loading sustainability data:', error);
-        toast({
-          title: "Failed to load sustainability data",
-          description: "There was an error loading sustainability information.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoadingSustainability(false);
-      }
-    }
-    
-    // Load trends data when trends tab is selected and not already loaded
-    if (tabId === 'trends' && !hasLoadedTrends) {
-      setLoadingTrends(true);
-      try {
-        let data = null;
-        
-        // Check MongoDB cache first if we have company ID
-        if (currentCompanyId) {
-          try {
-            const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'trends');
-            if (cachedData?.data) {
-              console.log('Using cached trends data from MongoDB');
-              data = cachedData.data;
-            }
-          } catch (cacheError) {
-            console.log('No cached trends data found, fetching fresh data');
-          }
-        }
-        
-        // If no cached data, fetch fresh data
-        if (!data) {
-          console.log('Fetching fresh trends data from AI');
-          const detectedIndustry = getIndustryFromCompany(selectedCompany);
-          data = await trendsRegulationsService.getTrends(detectedIndustry, selectedCompany.basicInfo.name);
-          
-          // Save fresh data to MongoDB if we have company ID
-          if (data && currentCompanyId) {
-            try {
-              await CompanySearchService.saveAnalysisData(currentCompanyId, 'trends', data);
-              console.log('Saved fresh trends data to MongoDB');
-            } catch (saveError) {
-              console.warn('Failed to save trends data to MongoDB:', saveError);
-            }
-          }
-        }
-        
-        setTrendsData(data);
-        setHasLoadedTrends(true);
-      } catch (error) {
-        console.error('Error loading trends data:', error);
-        toast({
-          title: "Failed to load trends data",
-          description: "There was an error loading industry trends information.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoadingTrends(false);
-      }
-    }
-    
-    // Load strategy data when strategy tab is selected and not already loaded
-    if (tabId === 'strategy' && !hasLoadedStrategy) {
-      setLoadingStrategy(true);
-      try {
-        let data = null;
-        
-        // Check MongoDB cache first if we have company ID
-        if (currentCompanyId) {
-          try {
-            const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'commercial');
-            if (cachedData?.data) {
-              console.log('Using cached commercial strategy data from MongoDB');
-              data = cachedData.data;
-            }
-          } catch (cacheError) {
-            console.log('No cached commercial strategy data found, fetching fresh data');
-          }
-        }
-        
-        // If no cached data, fetch fresh data
-        if (!data) {
-          console.log('Fetching fresh commercial strategy data from AI');
-          data = await CommercialStrategyService.fetchSalesPlay(selectedCompany.basicInfo.name);
-          
-          // Save fresh data to MongoDB if we have company ID
-          if (data && currentCompanyId) {
-            try {
-              await CompanySearchService.saveAnalysisData(currentCompanyId, 'commercial', data);
-              console.log('Saved fresh commercial strategy data to MongoDB');
-            } catch (saveError) {
-              console.warn('Failed to save commercial strategy data to MongoDB:', saveError);
-            }
-          }
-        }
-        
-        setSalesPlayData(data);
-        setHasLoadedStrategy(true);
-      } catch (error) {
-        console.error('Error loading strategy data:', error);
-        toast({
-          title: "Failed to load strategy data",
-          description: "There was an error loading commercial strategy information.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoadingStrategy(false);
-      }
-    }
-    
-    // Load winning message data when strategy tab is selected and not already loaded
-    if (tabId === 'strategy' && !hasLoadedWinningMessage) {
-      setLoadingWinningMessage(true);
-      try {
-        const data = await CommercialStrategyService.fetchWinningMessage(selectedCompany.basicInfo.name);
-        setWinningMessageData(data);
-        setHasLoadedWinningMessage(true);
-      } catch (error) {
-        console.error('Error loading winning message data:', error);
-        toast({
-          title: "Failed to load winning message data",
-          description: "There was an error loading winning message information.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoadingWinningMessage(false);
-      }
-    }
-
-    // Load products data when products tab is selected and not already loaded
-    if (tabId === 'products' && !hasLoadedProducts) {
-      setLoadingProducts(true);
-      try {
-        let data = null;
-        
-        // Check MongoDB cache first if we have company ID
-        if (currentCompanyId) {
-          try {
-            const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'products');
-            if (cachedData?.data) {
-              console.log('Using cached products analysis data from MongoDB');
-              data = cachedData.data;
-            }
-          } catch (cacheError) {
-            console.log('No cached products analysis data found, fetching fresh data');
-          }
-        }
-        
-        // If no cached data, fetch fresh data
-        if (!data) {
-          console.log('Fetching fresh products analysis data from AI');
-          data = await ProductsService.fetchProductAnalysis(selectedCompany.basicInfo.name);
-          
-          // Save fresh data to MongoDB if we have company ID
-          if (data && currentCompanyId) {
-            try {
-              await CompanySearchService.saveAnalysisData(currentCompanyId, 'products', data);
-              console.log('Saved fresh products analysis data to MongoDB');
-            } catch (saveError) {
-              console.warn('Failed to save products analysis data to MongoDB:', saveError);
-            }
-          }
-        }
-        
-        setProductsData(data);
-        setHasLoadedProducts(true);
-      } catch (error) {
-        console.error('Error loading products data:', error);
-        toast({
-          title: "Failed to load products data",
-          description: "There was an error loading products and packaging information.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoadingProducts(false);
-      }
-    }
   };
 
   // Helper function to detect industry (moved from TrendsRegulations component)
@@ -399,6 +172,289 @@ const Index = () => {
     
     // Default fallback
     return company.basicInfo.industry || 'General Industry';
+  };
+
+  // Handler functions for generating data
+  const handleGenerateSustainability = async () => {
+    if (!selectedCompany) return;
+    
+    // Get the company ID for cache lookup
+    let currentCompanyId = null;
+    try {
+      const companySearchResult = await CompanySearchService.findOrCreateCompany(selectedCompany.basicInfo.name);
+      currentCompanyId = companySearchResult?.company?.id;
+    } catch (error) {
+      console.warn('Failed to get company ID for cache lookup:', error);
+    }
+    
+    setLoadingSustainability(true);
+    try {
+      let data = null;
+      
+      // Check MongoDB cache first if we have company ID
+      if (currentCompanyId) {
+        try {
+          const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'competitive');
+          if (cachedData?.data) {
+            console.log('Using cached sustainability data from MongoDB');
+            data = cachedData.data;
+          }
+        } catch (cacheError) {
+          console.log('No cached sustainability data found, fetching fresh data');
+        }
+      }
+      
+      // If no cached data, fetch fresh data
+      if (!data) {
+        console.log('Fetching fresh sustainability data from AI');
+        data = await CompanyDataService.fetchSustainabilityData(selectedCompany.basicInfo.name);
+        
+        // Save fresh data to MongoDB if we have company ID
+        if (data && currentCompanyId) {
+          try {
+            await CompanySearchService.saveAnalysisData(currentCompanyId, 'competitive', data);
+            console.log('Saved fresh sustainability data to MongoDB');
+          } catch (saveError) {
+            console.warn('Failed to save sustainability data to MongoDB:', saveError);
+          }
+        }
+      }
+      
+      setSustainabilityData(data);
+      setHasLoadedSustainability(true);
+      
+      toast({
+        title: "Sustainability data generated",
+        description: "Successfully generated sustainability analysis.",
+      });
+    } catch (error) {
+      console.error('Error loading sustainability data:', error);
+      toast({
+        title: "Failed to generate sustainability data",
+        description: "There was an error generating sustainability information.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingSustainability(false);
+    }
+  };
+
+  const handleGenerateTrends = async () => {
+    if (!selectedCompany) return;
+    
+    // Get the company ID for cache lookup
+    let currentCompanyId = null;
+    try {
+      const companySearchResult = await CompanySearchService.findOrCreateCompany(selectedCompany.basicInfo.name);
+      currentCompanyId = companySearchResult?.company?.id;
+    } catch (error) {
+      console.warn('Failed to get company ID for cache lookup:', error);
+    }
+    
+    setLoadingTrends(true);
+    try {
+      let data = null;
+      
+      // Check MongoDB cache first if we have company ID
+      if (currentCompanyId) {
+        try {
+          const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'trends');
+          if (cachedData?.data) {
+            console.log('Using cached trends data from MongoDB');
+            data = cachedData.data;
+          }
+        } catch (cacheError) {
+          console.log('No cached trends data found, fetching fresh data');
+        }
+      }
+      
+      // If no cached data, fetch fresh data
+      if (!data) {
+        console.log('Fetching fresh trends data from AI');
+        const detectedIndustry = getIndustryFromCompany(selectedCompany);
+        data = await trendsRegulationsService.getTrends(detectedIndustry, selectedCompany.basicInfo.name);
+        
+        // Save fresh data to MongoDB if we have company ID
+        if (data && currentCompanyId) {
+          try {
+            await CompanySearchService.saveAnalysisData(currentCompanyId, 'trends', data);
+            console.log('Saved fresh trends data to MongoDB');
+          } catch (saveError) {
+            console.warn('Failed to save trends data to MongoDB:', saveError);
+          }
+        }
+      }
+      
+      setTrendsData(data);
+      setHasLoadedTrends(true);
+      
+      toast({
+        title: "Trends data generated",
+        description: "Successfully generated industry trends analysis.",
+      });
+    } catch (error) {
+      console.error('Error loading trends data:', error);
+      toast({
+        title: "Failed to generate trends data",
+        description: "There was an error generating industry trends information.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingTrends(false);
+    }
+  };
+
+  const handleGenerateStrategy = async () => {
+    if (!selectedCompany) return;
+    
+    // Get the company ID for cache lookup
+    let currentCompanyId = null;
+    try {
+      const companySearchResult = await CompanySearchService.findOrCreateCompany(selectedCompany.basicInfo.name);
+      currentCompanyId = companySearchResult?.company?.id;
+    } catch (error) {
+      console.warn('Failed to get company ID for cache lookup:', error);
+    }
+    
+    setLoadingStrategy(true);
+    try {
+      let data = null;
+      
+      // Check MongoDB cache first if we have company ID
+      if (currentCompanyId) {
+        try {
+          const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'commercial');
+          if (cachedData?.data) {
+            console.log('Using cached commercial strategy data from MongoDB');
+            data = cachedData.data;
+          }
+        } catch (cacheError) {
+          console.log('No cached commercial strategy data found, fetching fresh data');
+        }
+      }
+      
+      // If no cached data, fetch fresh data
+      if (!data) {
+        console.log('Fetching fresh commercial strategy data from AI');
+        data = await CommercialStrategyService.fetchSalesPlay(selectedCompany.basicInfo.name);
+        
+        // Save fresh data to MongoDB if we have company ID
+        if (data && currentCompanyId) {
+          try {
+            await CompanySearchService.saveAnalysisData(currentCompanyId, 'commercial', data);
+            console.log('Saved fresh commercial strategy data to MongoDB');
+          } catch (saveError) {
+            console.warn('Failed to save commercial strategy data to MongoDB:', saveError);
+          }
+        }
+      }
+      
+      setSalesPlayData(data);
+      setHasLoadedStrategy(true);
+      
+      toast({
+        title: "Strategy data generated",
+        description: "Successfully generated commercial strategy analysis.",
+      });
+    } catch (error) {
+      console.error('Error loading strategy data:', error);
+      toast({
+        title: "Failed to generate strategy data",
+        description: "There was an error generating commercial strategy information.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingStrategy(false);
+    }
+  };
+
+  const handleGenerateWinningMessage = async () => {
+    if (!selectedCompany) return;
+    
+    setLoadingWinningMessage(true);
+    try {
+      const data = await CommercialStrategyService.fetchWinningMessage(selectedCompany.basicInfo.name);
+      setWinningMessageData(data);
+      setHasLoadedWinningMessage(true);
+      
+      toast({
+        title: "Winning message generated",
+        description: "Successfully generated winning message analysis.",
+      });
+    } catch (error) {
+      console.error('Error loading winning message data:', error);
+      toast({
+        title: "Failed to generate winning message",
+        description: "There was an error generating winning message information.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingWinningMessage(false);
+    }
+  };
+
+  const handleGenerateProducts = async () => {
+    if (!selectedCompany) return;
+    
+    // Get the company ID for cache lookup
+    let currentCompanyId = null;
+    try {
+      const companySearchResult = await CompanySearchService.findOrCreateCompany(selectedCompany.basicInfo.name);
+      currentCompanyId = companySearchResult?.company?.id;
+    } catch (error) {
+      console.warn('Failed to get company ID for cache lookup:', error);
+    }
+    
+    setLoadingProducts(true);
+    try {
+      let data = null;
+      
+      // Check MongoDB cache first if we have company ID
+      if (currentCompanyId) {
+        try {
+          const cachedData = await CompanySearchService.getAnalysisData(currentCompanyId, 'products');
+          if (cachedData?.data) {
+            console.log('Using cached products analysis data from MongoDB');
+            data = cachedData.data;
+          }
+        } catch (cacheError) {
+          console.log('No cached products analysis data found, fetching fresh data');
+        }
+      }
+      
+      // If no cached data, fetch fresh data
+      if (!data) {
+        console.log('Fetching fresh products analysis data from AI');
+        data = await ProductsService.fetchProductAnalysis(selectedCompany.basicInfo.name);
+        
+        // Save fresh data to MongoDB if we have company ID
+        if (data && currentCompanyId) {
+          try {
+            await CompanySearchService.saveAnalysisData(currentCompanyId, 'products', data);
+            console.log('Saved fresh products analysis data to MongoDB');
+          } catch (saveError) {
+            console.warn('Failed to save products analysis data to MongoDB:', saveError);
+          }
+        }
+      }
+      
+      setProductsData(data);
+      setHasLoadedProducts(true);
+      
+      toast({
+        title: "Products data generated",
+        description: "Successfully generated products and packaging analysis.",
+      });
+    } catch (error) {
+      console.error('Error loading products data:', error);
+      toast({
+        title: "Failed to generate products data",
+        description: "There was an error generating products and packaging information.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingProducts(false);
+    }
   };
 
   // Handler functions for refreshing data
@@ -562,16 +618,64 @@ const Index = () => {
           </div>
         );
       case 'products':
+        if (!hasLoadedProducts && !loadingProducts) {
+          return (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-8 h-8 bg-blue-500 rounded"></div>
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Products & Packaging Analysis
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Generate detailed analysis of {selectedCompany.basicInfo.name}'s products and packaging strategies.
+                </p>
+                <button
+                  onClick={handleGenerateProducts}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Generate Products Analysis
+                </button>
+              </div>
+            </div>
+          );
+        }
+        
         return (
           <ProductAnalysis 
             companyName={selectedCompany.basicInfo.name}
             data={productsData}
             loading={loadingProducts}
             error={null}
-            onRefresh={handleRefreshProducts}
+            onRefresh={hasLoadedProducts ? handleRefreshProducts : handleGenerateProducts}
           />
         );
       case 'sustainability':
+        if (!hasLoadedSustainability && !loadingSustainability) {
+          return (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-8 h-8 bg-green-500 rounded"></div>
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Sustainability Analysis
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Generate comprehensive sustainability and competitive analysis for {selectedCompany.basicInfo.name}.
+                </p>
+                <button
+                  onClick={handleGenerateSustainability}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Generate Sustainability Analysis
+                </button>
+              </div>
+            </div>
+          );
+        }
+        
         if (loadingSustainability) {
           return (
             <div className="text-center py-12">
@@ -611,6 +715,30 @@ const Index = () => {
           </div>
         );
       case 'trends':
+        if (!hasLoadedTrends && !loadingTrends) {
+          return (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-8 h-8 bg-purple-500 rounded"></div>
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Trends & Regulations Analysis
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Generate industry trends and regulatory analysis for {selectedCompany.basicInfo.name}.
+                </p>
+                <button
+                  onClick={handleGenerateTrends}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Generate Trends Analysis
+                </button>
+              </div>
+            </div>
+          );
+        }
+        
         return (
           <TrendsRegulations 
             companyData={selectedCompany}
@@ -618,12 +746,44 @@ const Index = () => {
             regulationsData={regulationsData}
             analysisData={analysisData}
             loading={loadingTrends}
-            onRefreshTrends={handleRefreshTrends}
+            onRefreshTrends={hasLoadedTrends ? handleRefreshTrends : handleGenerateTrends}
             onRefreshRegulations={handleRefreshRegulations}
             onRefreshAnalysis={handleRefreshAnalysis}
           />
         );
       case 'strategy':
+        if (!hasLoadedStrategy && !loadingStrategy && !hasLoadedWinningMessage && !loadingWinningMessage) {
+          return (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-8 h-8 bg-orange-500 rounded"></div>
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Commercial Strategy Analysis
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Generate sales strategy and winning message analysis for {selectedCompany.basicInfo.name}.
+                </p>
+                <div className="space-y-3">
+                  <button
+                    onClick={handleGenerateStrategy}
+                    className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium transition-colors block w-full"
+                  >
+                    Generate Sales Strategy
+                  </button>
+                  <button
+                    onClick={handleGenerateWinningMessage}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors block w-full"
+                  >
+                    Generate Winning Message
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        }
+        
         return (
           <CommercialStrategy 
             companyData={selectedCompany}
@@ -631,8 +791,8 @@ const Index = () => {
             winningMessageData={winningMessageData}
             loading={loadingStrategy}
             loadingWinningMessage={loadingWinningMessage}
-            onRefresh={handleRefreshStrategy}
-            onRefreshWinningMessage={handleRefreshWinningMessage}
+            onRefresh={hasLoadedStrategy ? handleRefreshStrategy : handleGenerateStrategy}
+            onRefreshWinningMessage={hasLoadedWinningMessage ? handleRefreshWinningMessage : handleGenerateWinningMessage}
           />
         );
       default:

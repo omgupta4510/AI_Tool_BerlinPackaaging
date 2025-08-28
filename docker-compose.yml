@@ -7,15 +7,9 @@ services:
       dockerfile: Dockerfile
     container_name: ai-tool-backend
     ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - PORT=3000
-      # Add your cloud database connection string here
-      - MONGODB_URI=${MONGODB_URI}
-      - SERPAPI_KEY=${SERPAPI_KEY}
-    env_file:
-      - .env
+      - "3001:3001"
+    
+    
     restart: unless-stopped
     networks:
       - ai-tool-network
@@ -32,11 +26,7 @@ services:
       dockerfile: Dockerfile
     container_name: ai-tool-frontend
     ports:
-      - "80:80"
-    depends_on:
-      backend:
-        condition: service_healthy
-    restart: unless-stopped
+      - "5173:5173"
     networks:
       - ai-tool-network
 
@@ -44,5 +34,4 @@ networks:
   ai-tool-network:
     driver: bridge
 
-volumes:
-  # No database volumes needed since using cloud database
+

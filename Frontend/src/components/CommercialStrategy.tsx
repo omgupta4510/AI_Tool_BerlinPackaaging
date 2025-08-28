@@ -61,11 +61,7 @@ const CommercialStrategy: React.FC<CommercialStrategyProps> = ({
     }
   }, [companyData?.basicInfo?.name, propSalesPlayData]);
 
-  useEffect(() => {
-    if (companyData && activeTab === 'sales-play' && !hasLoadedSalesPlay && !propSalesPlayData && !onRefresh) {
-      loadSalesPlay();
-    }
-  }, [companyData, activeTab, hasLoadedSalesPlay, propSalesPlayData, onRefresh]);
+  // Remove auto-loading - data will only be loaded when user clicks generate buttons
 
   const loadSalesPlay = async () => {
     if (!companyData?.basicInfo?.name || hasLoadedSalesPlay || propSalesPlayData) return;

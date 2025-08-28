@@ -80,12 +80,7 @@ const TrendsRegulations = ({
                 companyData?.basicInfo?.headquarters?.includes('US') || companyData?.basicInfo?.headquarters?.includes('United States') ? 'North America' : 
                 'Global';
 
-  // Auto-fetch trends data when component mounts (only if no data provided via props and no parent handlers)
-  useEffect(() => {
-    if (!propTrendsData && !onRefreshTrends) {
-      handleFetchTrends();
-    }
-  }, [companyName, detectedIndustry, propTrendsData, onRefreshTrends]);
+  // Remove auto-fetch - data will only be loaded when user clicks generate buttons
 
   const handleFetchTrends = async () => {
     if (onRefreshTrends) {
