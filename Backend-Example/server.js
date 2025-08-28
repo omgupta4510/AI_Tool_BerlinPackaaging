@@ -28,7 +28,6 @@ const PORT = process.env.PORT || 3001;
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(timeout('10m')); // 10 minute timeout
 // Use routes
 app.use('/api/trends-regulations', trendsRegulationsRoutes);
 app.use('/api/commercial-strategy', commercialStrategyRoutes);
