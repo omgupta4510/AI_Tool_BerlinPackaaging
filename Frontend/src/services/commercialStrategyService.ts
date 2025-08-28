@@ -82,7 +82,7 @@ export interface WinningMessageData {
 }
 
 class CommercialStrategyService {
-  private baseUrl = 'http://localhost:3001/api';
+  private baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
 
   async fetchSalesPlay(companyName: string): Promise<CommercialStrategyData> {
     try {
