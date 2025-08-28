@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Backend-Example
+      dockerfile: Dockerfile
+    container_name: ai-tool-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Add your cloud database connection string here
+      - MONGODB_URI=${MONGODB_URI}
+      - SERPAPI_KEY=${SERPAPI_KEY}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - ai-tool-network
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: ai-tool-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - ai-tool-network
+
+networks:
+  ai-tool-network:
+    driver: bridge
+
+volumes:
+  # No database volumes needed since using cloud database
